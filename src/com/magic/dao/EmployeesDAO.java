@@ -68,7 +68,7 @@ public class EmployeesDAO {
 					} else { // 레벨 불일치 로그인 실패
 						result = 1;
 					}
-				} else { // 비밀번호 불일치 로그인 실패
+				} else { // 비밀번호 불일치 로그인 실패.
 					result = 0;
 				}
 			} else { // 아이디 불일치 로그인 실패
