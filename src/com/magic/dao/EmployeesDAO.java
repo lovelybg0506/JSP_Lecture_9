@@ -72,7 +72,7 @@ public class EmployeesDAO {
 					result = 0;
 				}
 			} else { // 아이디 불일치 로그인 실패
-				result = -1;
+				result = -1; 
 			}
 
 		} catch (Exception e) {
@@ -91,45 +91,116 @@ public class EmployeesDAO {
 	}
 
 	public EmployeesVO getMember(String id) {
-			EmployeesVO member=null;
+		EmployeesVO member = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select * from employees where id=?";
+
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				member = new EmployeesVO();
+				member.setId(rs.getString("id"));
+				member.setPass(rs.getString("pass"));
+				member.setName(rs.getString("name"));
+				member.setLev(rs.getString("lev"));
+				member.setEnter(rs.getDate("enter"));
+				member.setGender(rs.getInt("gender"));
+				member.setPhone(rs.getString("phone"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+				pstmt.close();
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return member;
+	}
+
+	public void insertMember(EmployeesVO member) {
+		String sql = "insert into employees values(?,?,?,?,sysdate,?,?)";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, member.getId());
+			pstmt.setString(2, member.getPass());
+			pstmt.setString(3, member.getName());
+			pstmt.setString(4, member.getLev());
+			pstmt.setInt(5, member.getGender());
+			pstmt.setString(6, member.getPhone());
 			
-			Connection conn=null;
-			String sql = "select * from employees where id=?";
-			PreparedStatement pstmt=null;
-			ResultSet rs=null;
+			System.out.println(pstmt.executeUpdate());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstmt.close();
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public int updateMember(EmployeesVO evo) {
+		int result=-1;
+		String sql="update employees set gender=?,pass=?,name=?,lev=?,phone=? where id=?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn=getConnection();
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setInt(1,evo.getGender());
+			pstmt.setString(2,evo.getPass());
+			pstmt.setString(3,evo.getName());
+			pstmt.setString(4,evo.getLev());
+			pstmt.setString(5,evo.getPhone());
+			pstmt.setString(6,evo.getId());
+			result=pstmt.executeUpdate();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
 			
 			try {
-				conn=getConnection();
-				pstmt=conn.prepareStatement(sql);
-				pstmt.setString(1, id);
-				
-				rs=pstmt.executeQuery();
-				
-				if(rs.next()) {
-					member=new EmployeesVO();
-					member.setId(rs.getString("id"));
-					member.setPass(rs.getString("pass"));
-					member.setName(rs.getString("name"));
-					member.setLev(rs.getString("lev"));
-					member.setEnter(rs.getDate("enter"));
-					member.setGender(rs.getInt("gender"));
-					member.setPhone(rs.getString("phone"));
-				}
-			}catch(Exception e) {
-				e.printStackTrace();
-			}finally {
-				try {
-					rs.close();
+				if(pstmt != null)
 					pstmt.close();
+				if(conn != null)
 					conn.close();
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
+			}catch(SQLException e) {
+				e.printStackTrace();
 			}
-			return member;
 		}
-	
-	public void insertMember() {
 		
+		return result;
 	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
