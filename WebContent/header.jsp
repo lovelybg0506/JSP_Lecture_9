@@ -33,16 +33,16 @@ table.mainmenu td.login:hover{
 	<c:if test="${!empty loginUser}">
 		<tr>
 			<td>${loginUser.name}님 반갑습니다.</td>
-			<td>레벨:${loginUser.lev}
+			<td>레벨:${loginUser.lev}</td>
 			<td class="login"><a href="logout.do" style="text-decoration:none;">로그아웃</a></td>
 			
 			<c:choose>
-				<c:when test="result == 2">
-				<td class="login"><a href="custom.do" style="text-decoration:none;">사원 등록</a></td>
+				<c:when test="${result == 2}">
+					<td class="login"><a href="custom.do" style="text-decoration:none;">사원 등록</a></td>
 				</c:when>
-				<c:when test="result == 3">
-				<td style="width:300px">사원등록<br>
-				<span style="color:red">(관리자로 로그인 후 사용가능)</span></td>
+				<c:when test="${result == 3}">
+					<td style="width:300px">사원등록<br>
+					<span style="color:red">(관리자로 로그인 후 사용가능)</span></td>
 				</c:when>
 			</c:choose>
 			

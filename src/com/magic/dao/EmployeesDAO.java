@@ -111,7 +111,7 @@ public class EmployeesDAO {
 				member.setName(rs.getString("name"));
 				member.setLev(rs.getString("lev"));
 				member.setEnter(rs.getDate("enter"));
-				member.setGender(rs.getInt("gender"));
+				member.setGender(rs.getString("gender"));
 				member.setPhone(rs.getString("phone"));
 			}
 		} catch (Exception e) {
@@ -141,7 +141,7 @@ public class EmployeesDAO {
 			pstmt.setString(2, member.getPass());
 			pstmt.setString(3, member.getName());
 			pstmt.setString(4, member.getLev());
-			pstmt.setInt(5, member.getGender());
+			pstmt.setString(5, member.getGender());
 			pstmt.setString(6, member.getPhone());
 			
 			System.out.println(pstmt.executeUpdate());
@@ -166,7 +166,7 @@ public class EmployeesDAO {
 		try {
 			conn=getConnection();
 			pstmt=conn.prepareStatement(sql);
-			pstmt.setInt(1,evo.getGender());
+			pstmt.setString(1,evo.getGender());
 			pstmt.setString(2,evo.getPass());
 			pstmt.setString(3,evo.getName());
 			pstmt.setString(4,evo.getLev());

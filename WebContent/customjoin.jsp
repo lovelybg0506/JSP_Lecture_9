@@ -27,7 +27,7 @@
 		</tr>
 		<tr>
 			<td align="center">권한</td>
-			<td><select name="select">
+			<td><select name="lev">
 					<option value="A">운영자</option>
 					<option value="B">일반회원</option>
 				</select>	

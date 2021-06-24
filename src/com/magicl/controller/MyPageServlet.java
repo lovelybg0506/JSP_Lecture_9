@@ -14,16 +14,16 @@ import com.magic.dao.EmployeesDAO;
 import com.magic.dto.EmployeesVO;
 
 /**
- * Servlet implementation class CustomJoinServlet
+ * Servlet implementation class MyPageServlet
  */
-@WebServlet("/custom.do")
-public class CustomJoinServlet extends HttpServlet {
+@WebServlet("/mypage.do")
+public class MyPageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CustomJoinServlet() {
+    public MyPageServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,19 +33,17 @@ public class CustomJoinServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		// response.getWriter().append("Served at: ").append(request.getContextPath());
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		HttpSession session=request.getSession();
-		//사원등록을 하기 위한 서블릿임 -> EmployeesVO에 저장해야한다.
-		EmployeesVO emp=(EmployeesVO)session.getAttribute("loginUser"); // getAttribute는 object type
-		Integer result=(Integer)session.getAttribute("result");
-		if(emp != null && result == 2) {
-			String url="customjoin.jsp"; // 나중에 jsp 파일 이름이 바뀔수도 있으므로 이렇게 한다.
-			RequestDispatcher rd = request.getRequestDispatcher(url);
-			rd.forward(request, response);
+		EmployeesVO emp=(EmployeesVO)session.getAttribute("loginUser");
+		if(emp != null) {
+			String url="mypage.jsp";
+		
+			RequestDispatcher dispatcher=request.getRequestDispatcher(url);
+			dispatcher.forward(request, response);
 		}else {
 			response.sendRedirect("login.do");
 		}
-	
 	}
 
 	/**
@@ -54,8 +52,11 @@ public class CustomJoinServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		// doGet(request, response);
-		request.setCharacterEncoding("UTF-8");
-		EmployeesVO member=new EmployeesVO();
+		request.setCharacterEncoding("utf-8");
+		
+		System.out.println(request.getParameter("name"));
+		HttpSession session = request.getSession();
+		EmployeesVO member = new EmployeesVO();
 		member.setId(request.getParameter("id"));
 		member.setPass(request.getParameter("pwd"));
 		member.setName(request.getParameter("name"));
@@ -63,15 +64,23 @@ public class CustomJoinServlet extends HttpServlet {
 		member.setGender(request.getParameter("gender"));
 		member.setPhone(request.getParameter("phone"));
 		
-		EmployeesDAO memberdao=EmployeesDAO.getInstance();
-		memberdao.insertMember(member);
+		EmployeesDAO edao=EmployeesDAO.getInstance();
+		edao.updateMember(member);
+	
+		EmployeesVO emp = edao.getMember(member.getId());
+		request.setAttribute("member", emp);
+		request.setAttribute("message", "회원 정보가 수정 되었습니다.");
 		
-		request.setAttribute("member",member);
-		request.setAttribute("message", "회원 등록에 성공했습니다.");
-		String url ="joinsuccess.jsp";
+		session.setAttribute("loginUser", emp);
 		
-		RequestDispatcher rd = request.getRequestDispatcher(url);
-		rd.forward(request, response);
+		System.out.println(emp);
+		
+		int result = edao.userCheck(member.getId(),member.getPass(),member.getLev());
+		session.setAttribute("result", result); // setAttribute(String name,Object value)
+		
+		String url="jounsuccess.jsp";
+		RequestDispatcher dispatcher=request.getRequestDispatcher(url);
+		dispatcher.forward(request, response);
 		
 	}
 
