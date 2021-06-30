@@ -8,9 +8,7 @@
 </head>
 <body>
 	<%
-		response.sendRedirect("login.do");
+		response.sendRedirect("login.do");  //리다이렉트는 다시 접속하라는뜻
 	%>
-	
-
 </body>
 </html>

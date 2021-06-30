@@ -78,7 +78,7 @@ public class MyPageServlet extends HttpServlet {
 		int result = edao.userCheck(member.getId(),member.getPass(),member.getLev());
 		session.setAttribute("result", result); // setAttribute(String name,Object value)
 		
-		String url="jounsuccess.jsp";
+		String url="joinsuccess.jsp";
 		RequestDispatcher dispatcher=request.getRequestDispatcher(url);
 		dispatcher.forward(request, response);
 		
